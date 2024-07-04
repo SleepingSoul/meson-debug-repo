@@ -178,6 +178,7 @@ class QtPkgConfigDependency(_QtBase, PkgConfigDependency, metaclass=abc.ABCMeta)
         # not a requested module, delete the compile and link arguments to
         # avoid linking with something they didn't ask for
         PkgConfigDependency.__init__(self, self.qtpkgname + 'Core', env, kwargs)
+        mlog.log(f"[tihran] PKG CONFIG DEPENDENCY ENV: {env}")
         if 'Core' not in self.requested_modules:
             self.compile_args = []
             self.link_args = []
@@ -189,6 +190,7 @@ class QtPkgConfigDependency(_QtBase, PkgConfigDependency, metaclass=abc.ABCMeta)
                 return
             if self.private_headers:
                 qt_inc_dir = mod.get_variable(pkgconfig='includedir')
+                mlog.log(f"[tihran] PKG CONFIG INCLUDEDIR RETURNED: {qt_inc_dir}")
                 mod_private_dir = os.path.join(qt_inc_dir, 'Qt' + m)
                 if not os.path.isdir(mod_private_dir):
                     mlog.log(f"[tihran] DIR {mod_private_dir} IS NOT DIR ACCORDING TO OS MODULE")
