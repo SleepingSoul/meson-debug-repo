@@ -49,7 +49,7 @@ def _qt_get_private_includes(mod_inc_dir: str, module: str, mod_version: str) ->
         for dirname in sorted(dirs, reverse=True):
             if len(dirname.split('.')) == 3:
                 private_dir = dirname
-                break
+                break   
     return [private_dir, os.path.join(private_dir, 'Qt' + module)]
 
 
@@ -191,6 +191,7 @@ class QtPkgConfigDependency(_QtBase, PkgConfigDependency, metaclass=abc.ABCMeta)
                 qt_inc_dir = mod.get_variable(pkgconfig='includedir')
                 mod_private_dir = os.path.join(qt_inc_dir, 'Qt' + m)
                 if not os.path.isdir(mod_private_dir):
+                    mlog.log(f"[tihran] DIR {mod_private_dir} IS NOT DIR ACCORDING TO OS MODULE")
                     # At least some versions of homebrew don't seem to set this
                     # up correctly. /usr/local/opt/qt/include/Qt + m_name is a
                     # symlink to /usr/local/opt/qt/include, but the pkg-config
@@ -198,6 +199,7 @@ class QtPkgConfigDependency(_QtBase, PkgConfigDependency, metaclass=abc.ABCMeta)
                     # the Qt + m_name there is not a symlink, it's a file
                     mod_private_dir = qt_inc_dir
                 mod_private_inc = _qt_get_private_includes(mod_private_dir, m, mod.version)
+                mlog.log(f"[tihran] MOD PRIVATE INCLUDES RETURNED: {mod_private_inc}")
                 for directory in mod_private_inc:
                     mod.compile_args.append('-I' + directory)
             self._add_sub_dependency([lambda: mod])
